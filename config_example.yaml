@@ -1,0 +1,78 @@
+# Multi-Agent Chain-of-Thought Configuration
+
+# Model definitions for small language models (1-3B parameters)
+models:
+  - name: "phi-2"
+    model_path: "microsoft/phi-2"
+    max_tokens: 512
+    temperature: 0.7
+    load_in_8bit: true
+    trust_remote_code: true
+
+  - name: "phi-1.5"
+    model_path: "microsoft/phi-1_5"
+    max_tokens: 512
+    temperature: 0.8
+    load_in_8bit: true
+    trust_remote_code: true
+
+  - name: "stablelm-3b"
+    model_path: "stabilityai/stablelm-3b-4e1t"
+    max_tokens: 512
+    temperature: 0.7
+    load_in_8bit: true
+    trust_remote_code: true
+
+# Agent configurations with different roles and specializations
+agents:
+  - agent_id: "primary_reasoner"
+    model_name: "phi-2"
+    role: "primary_reasoner"
+    reasoning_depth: 4
+    use_self_critique: true
+    max_tokens: 512
+    temperature: 0.7
+
+  - agent_id: "adversarial_critic"
+    model_name: "phi-1.5"
+    role: "adversarial_critic"
+    reasoning_depth: 3
+    use_self_critique: false
+    max_tokens: 512
+    temperature: 0.8
+
+  - agent_id: "synthesizer"
+    model_name: "phi-2"
+    role: "synthesizer"
+    reasoning_depth: 5
+    use_self_critique: true
+    max_tokens: 512
+    temperature: 0.6
+
+  - agent_id: "quality_controller"
+    model_name: "stablelm-3b"
+    role: "quality_controller"
+    reasoning_depth: 3
+    use_self_critique: true
+    max_tokens: 512
+    temperature: 0.5
+
+# Multi-agent coordinator settings
+coordinator:
+  max_rounds: 5
+  consensus_threshold: 0.8
+  enable_adversarial: true
+  default_interaction_mode: "adversarial"
+
+# Evaluation framework configuration
+evaluation:
+  benchmark_tasks_file: null
+  output_dir: "./results"
+  save_detailed_results: true
+  compare_with_baseline: false
+  baseline_results_file: null
+
+# System settings
+logging_level: "INFO"
+device: null  # Auto-detect (cuda if available, else cpu)
+random_seed: 42
